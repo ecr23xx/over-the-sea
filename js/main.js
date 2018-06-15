@@ -17,6 +17,8 @@ function init() {
   raycasterInit();
   PostprocessingInit();
 
+  clothInit();
+  fireworksInit();
   // fish
 
 
@@ -26,16 +28,18 @@ function init() {
   guiThreeInit();
   guiSceneInit();
   guiPostprocessingInit();
+  guiClothInit();
+  guiFireworksInit();
 
   clock = new THREE.Clock();
   stats = new Stats();
   clock.start();
   document.body.appendChild(stats.dom);
-
-  animation();
+  requestAnimationFrame(this.animation.bind(this));
+  // animation(this);
 }
 
-function animation() {
+function animation(current) {
   // raycaster
   raycaster.setFromCamera(mouse, camera);
   let targetDeepth = 100 + 50 * Math.sin(performance.now() * 0.001);
@@ -46,6 +50,8 @@ function animation() {
   fishAnimation();
   collisionDetection();
 
+  clothAnimation(current);
+  fireworksAnimation();
   // composer.render();
   stats.begin();
   stats.end();
@@ -60,7 +66,7 @@ function animation() {
   let delta = clock.getDelta();
   if (guiThreeParams.fly) controler.update(delta);
 
-  requestAnimationFrame(animation);
+  requestAnimationFrame(this.animation.bind(this));
 }
 
 //////////////////////////
@@ -119,7 +125,7 @@ function threeInit() {
     85,
     window.innerWidth / window.innerHeight,
     1,
-    1000
+    3000
   );
   camera.position.set(25, 20, 70);
   camera.lookAt(scene.position);
