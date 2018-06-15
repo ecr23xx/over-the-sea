@@ -19,6 +19,7 @@ function init() {
 
   clothInit();
   fireworksInit();
+  bubblesInit();
   // fish
 
 
@@ -30,6 +31,7 @@ function init() {
   guiPostprocessingInit();
   guiClothInit();
   guiFireworksInit();
+  guiBubblesInit();
 
   clock = new THREE.Clock();
   stats = new Stats();
@@ -52,6 +54,7 @@ function animation(current) {
 
   clothAnimation(current);
   fireworksAnimation();
+  bubblesAnimation();
   // composer.render();
   stats.begin();
   stats.end();

@@ -13727,7 +13727,7 @@
 
 			if ( target === undefined ) {
 
-				console.warn( 'THREE.Line3: .closestPointToPoint() target is now required' );
+				//  console.warn( 'THREE.Line3: .closestPointToPoint() target is now required' );
 				target = new Vector3();
 
 			}
@@ -13776,7 +13776,7 @@
 
 				if ( target === undefined ) {
 
-					console.warn( 'THREE.Triangle: .getNormal() target is now required' );
+					// console.warn( 'THREE.Triangle: .getNormal() target is now required' );
 					target = new Vector3();
 
 				}
