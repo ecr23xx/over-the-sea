@@ -1,2 +1,7 @@
-# Under-the-sea
-计算机图形学期末项目 Final project of CG@SYSU
+# over the sea
+
+Proudly presented by [TinyHippo-CG]() & [Bobo]()
+
+浮游在海上的岛屿，潜沉于水下的人。
+
+[🎵 Over the sea, under the water by Cicada](https://cicada.bandcamp.com/track/over-the-sea-under-the-water)
