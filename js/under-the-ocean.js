@@ -49,7 +49,9 @@ function guiSeaInit() {
     guiUnderSea.add(guiSeaParams, 'underTheSea').name('under sea').onChange(function(value) {
     	if (value) {
     		controler = new THREE.OrbitControls(seaCamera, renderer.domElement);
-    	}
+    	} else {
+            controler = new THREE.OrbitControls(camera, renderer.domElement);
+        }
     });
     guiUnderSea.addColor(guiSeaParams, 'sandColor').onChange(function(value) {
     	if (guiSeaParams.underTheSea) {
