@@ -95,7 +95,7 @@ Bubbles.prototype = {
 
             for (let i = 0; i < this.num; i++) {
                 this.material.opacity -= (time-this.start) * 0.00003 * Math.random();
-                if (this.geometry.vertices[i].y >= -50) {
+                if (this.geometry.vertices[i].y >= -20) {
                     this.reset();
                     this.vanish = true;
                     return;
@@ -103,7 +103,7 @@ Bubbles.prototype = {
             }
             this.material.size *= 1.001;
             this.target.position.x = 30 * Math.cos(time * 0.7);
-            this.target.position.y = 50 * (time - this.start) - 300;
+            this.target.position.y = 50 * (time - this.start) - 200;
             this.target.position.z = 300 * Math.sin(time * 0.7);
             this.target.rotation.x += 0.2 * Math.PI * delta;
             this.target.rotation.y += 0.2 * Math.PI * delta;
@@ -136,7 +136,7 @@ function bubblesAnimation() {
             v.x = v.x - (v.velocityX);
             v.z = v.z - (v.velocityZ);
 
-            if (v.y >= -50) v.y = -500;
+            if (v.y >= -20) v.y = -500;
             if (v.x <= -300 || v.x >= 300) v.velocityX = v.velocityX * -1;
             if (v.z <= -700 || v.z >= 400) v.velocityZ = v.velocityZ * -1;
         });
