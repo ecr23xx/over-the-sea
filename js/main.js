@@ -11,11 +11,16 @@ let Colors = {
   yellow: 0xfaff70
 };
 
+
+
 function init() {
   threeInit();
   sceneInit();
   raycasterInit();
   PostprocessingInit();
+
+  //deer
+  deerInit();
 
   clothInit();
   fireworksInit();
@@ -32,6 +37,9 @@ function init() {
   guiClothInit();
   guiFireworksInit();
   guiBubblesInit();
+
+  
+
 
   clock = new THREE.Clock();
   stats = new Stats();
@@ -55,6 +63,8 @@ function animation(current) {
   clothAnimation(current);
   fireworksAnimation();
   bubblesAnimation();
+  
+  deerAnimation();
   // composer.render();
   stats.begin();
   stats.end();
