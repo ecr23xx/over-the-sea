@@ -226,11 +226,11 @@ let guiBubblesParam = new function () {
 
 function guiBubblesInit() {
     let guiBubbles = gui.addFolder("Bubbles Setting");
-    guiBubbles.add(guiBubblesParam, 'size', 0, 1.5).onChange(function(value) { // 设置烟花的半径大小
+    guiBubbles.add(guiBubblesParam, 'size', 0, 1.5).onChange(function(value) { // 设置bubble的半径大小
         bubbleRadius = value;
         guiBubblesParam.redraw();
     });
-    guiBubbles.add(guiBubblesParam, 'opacity', 0, 1).onChange(function(value) { // 设置烟花的半径大小
+    guiBubbles.add(guiBubblesParam, 'opacity', 0, 1).onChange(function(value) { // 设置bubble的半径大小
         bubbleOpacity = value;
         guiBubblesParam.redraw();
     });
