@@ -4,7 +4,8 @@ let guiSceneParams = {
   showFish: false,
   seaPlaneColor: 0x70A5C5,
   skyAndFogColor: 0x93CFF3,
-  islandColor: 0xffffff
+  islandColor: 0xffffff,
+  collisionDetect: false
 };
 
 function getRandomColor() {
@@ -62,6 +63,8 @@ function guiSceneInit() {
         element.visible = value;
       }
     });
+  guiScene
+    .add(guiSceneParams, "collisionDetect");
 }
 
 // cloud
