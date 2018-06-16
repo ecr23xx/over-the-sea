@@ -186,7 +186,9 @@ function threeInit() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   container.appendChild(renderer.domElement);
   renderer.shadowMap.enabled = true;
-  renderer.setClearColor(0x93CFF3);
+  renderer.setClearColor(0x000000);
+  
+  stateBuffers = renderer.state.buffers;
 
   // light that case shadow
   //   scene.add(new THREE.AmbientLight(0x663344, 3.0));
