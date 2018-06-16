@@ -144,7 +144,7 @@ function bubblesAnimation() {
     });
 
     if (bubbles.length === 0) {
-        bubbles.push(new Bubbles(scene));
+        bubbles.push(new Bubbles(underScene));
     }
     for(let i = 0; i < bubbles.length; i++) {
         if (bubbles[i].vanish === true) {
@@ -200,13 +200,13 @@ function createVariousBubbles() {
     let texture3 = loader.load("../asset/textures/bubbles/48450.png");
     let texture4 = loader.load("../asset/textures/bubbles/5865068.png");
     variousBubbles.push(createNormalBubbles(texture1, 8*bubbleRadius, bubbleOpacity, ));
-    scene.add(variousBubbles[0]);
+    underScene.add(variousBubbles[0]);
     variousBubbles.push(createNormalBubbles(texture2, 20*bubbleRadius, bubbleOpacity));
-    scene.add(variousBubbles[1]);
+    underScene.add(variousBubbles[1]);
     variousBubbles.push(createNormalBubbles(texture3, 20*bubbleRadius, bubbleOpacity));
-    scene.add(variousBubbles[2]);
+    underScene.add(variousBubbles[2]);
     variousBubbles.push(createNormalBubbles(texture4, 25*bubbleRadius, bubbleOpacity));
-    scene.add(variousBubbles[3]);
+    underScene.add(variousBubbles[3]);
 }
 let guiBubblesParam = new function () {
     this.size = 1;
