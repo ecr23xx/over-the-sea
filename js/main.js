@@ -20,35 +20,35 @@ function init() {
   PostprocessingInit();
 
   //deer
-  // deerInit();
+  deerInit();
 
-  // clothInit();
-  // fireworksInit();
+  clothInit();
+  fireworksInit();
   // fish
 
 
-  // fishSwim.fish
-  // postprocessing();
+  fishSwim.fish
+  postprocessing();
   
   //under the sea
-  // underSeaInit();
-  // bubblesInit();
+  underSeaInit();
+  bubblesInit();
   
   gui = new dat.GUI();
-  // guiThreeInit();
-  // guiSceneInit();
-  // guiPostprocessingInit();
-  // guiClothInit();
-  // guiFireworksInit();
-  // guiBubblesInit();
-  // guiSeaInit();
+  guiThreeInit();
+  guiSceneInit();
+  guiPostprocessingInit();
+  guiClothInit();
+  guiFireworksInit();
+  guiBubblesInit();
+  guiSeaInit();
 
   clock = new THREE.Clock();
   stats = new Stats();
   clock.start();
   document.body.appendChild(stats.dom);
   requestAnimationFrame(this.animation.bind(this));
-  // animation(this);
+  animation(this);
 }
 
 function animation(current) {
@@ -336,15 +336,6 @@ function collisionDetectionForOneObject(mesh, collideMeshList) {
     let directionVector = globalVertex.sub(fish.position)
     let ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize(), 0, directionVector.length());
     let collisionResults = ray.intersectObjects(collideMeshList);
-
-    let material = new THREE.LineBasicMaterial({color:0x0000ff});  
-    let geometry = new THREE.Geometry()
-    geometry.vertices.push(globalVertex);
-    geometry.vertices.push(fish.position);
-    // console.log(fish.position)
-    // console.log(globalVertex)
-    var line = new THREE.Line(geometry, material);
-    // scene.add(line);
 
     console.log(collisionResults[0])
     if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
