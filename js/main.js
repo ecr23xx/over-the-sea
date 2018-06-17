@@ -17,8 +17,8 @@ function init() {
   raycasterInit();
   PostprocessingInit();
 
-  clothInit();
-  fireworksInit();
+  // clothInit();
+  // fireworksInit();
   // fish
 
 
@@ -45,13 +45,12 @@ function animation(current) {
   let targetDeepth = 100 + 50 * Math.sin(performance.now() * 0.001);
   fishSwim.target = raycaster.ray.at(targetDeepth, new THREE.Vector3());
 
-  seaplaneAnimaiton();
-  cloudAnimation();
+  // seaplaneAnimaiton();
   fishAnimation();
   collisionDetection();
 
-  clothAnimation(current);
-  fireworksAnimation();
+  // clothAnimation(current);
+  // fireworksAnimation();
   // composer.render();
   stats.begin();
   stats.end();
@@ -243,31 +242,31 @@ function handleWindowResize() {
 
 function collisionDetection() {
   let objects = scene.children
-  let collideMeshList = []
   let island = Object()
   for (let i = 0; i < objects.length; i++) {
     let obj = objects[i]
     if (obj.name == 'island') {
-      island = obj.clone()
+      island = Array(obj)
     } else if (obj.name == 'fish') {
-      collideMeshList.push(obj.children[0])
-    }
-  }
-
-  let originPoint = island.position.clone();
-
-  for (var vertexIndex = 0; vertexIndex < island.geometry.vertices.length; vertexIndex++) {
-    var localVertex = island.geometry.vertices[vertexIndex].clone();
-    var globalVertex = localVertex.applyMatrix4(island.matrix);
-    var directionVector = globalVertex.sub(island.position);
-
-    var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
-    var collisionResults = ray.intersectObjects(collideMeshList);
-    if (collisionResults.length > 0) {
-
-      for (let i = 0; i < collisionResults.length; i++) {
-        island.material.color.add(collisionResults[i].object.material.color).multiplyScalar(0.5)
-      }
+      collisionDetectionForOneObject(obj.children[0], island)
     }
   }
 }
+
+function collisionDetectionForOneObject(mesh, collideMeshList) {
+  let originPoint = mesh.position.clone();
+  
+  for (let vertexIndex = 0; vertexIndex < mesh.geometry.vertices.length; vertexIndex++) {
+    let localVertex = mesh.geometry.vertices[vertexIndex].clone();
+    let globalVertex = localVertex.applyMatrix4(mesh.matrix);
+    let directionVector = globalVertex.sub(mesh.position)
+
+    let ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
+    let collisionResults = ray.intersectObjects(collideMeshList);
+    if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
+      console.log(1)
+      mesh.parent.collision = 1
+    }
+  }
+}
+

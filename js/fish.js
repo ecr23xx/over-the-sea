@@ -1,7 +1,7 @@
 var fishSwim = {
   fish: [],
   target: null,
-  total: 25
+  total: 5
 };
 
 function fishAnimation() {
@@ -15,11 +15,15 @@ function fishAnimation() {
     element.speed.add(nowAcceleration);
     element.speed.clampLength(1.0, 3.0);
     element.speed.multiplyScalar(0.99);
-    element.position.add(element.speed);
-    // element.position.copy(new THREE.Vector3());
-    // let speedLength = element.speed.length();
-    // let tempScaler = THREE.Math.mapLinear(speedLength, 1.0, 3.0, 0.2, 1.0);
-    // tempScaler = THREE.Math.clamp(tempScaler, 0.2, 1.0);
+    if (element.collision == 1) {
+      console.log(element.collision)
+      // element.position.sub(element.speed);
+      setTimeout(() => {
+        element.collision = 0
+      }, 1000);
+    } else {
+      // element.position.add(element.speed);
+    }
     element.lookAt(fishSwim.target);
     element.rotation.y -= Math.PI * 0.5;
   }
@@ -35,7 +39,7 @@ function fishInit() {
   }
 }
 
-function randomV3(range) {
+function randomV3(range)  {
   let t1 = (Math.random() - 0.5) * range;
   let t2 = (Math.random() - 0.5) * range;
   let t3 = (Math.random() - 0.5) * range;
