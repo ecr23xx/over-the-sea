@@ -1,7 +1,7 @@
 var fishSwim = {
   fish: [],
   target: null,
-  total: 25
+  total: 2
 };
 
 function fishAnimation() {
@@ -15,7 +15,12 @@ function fishAnimation() {
     element.speed.add(nowAcceleration);
     element.speed.clampLength(1.0, 3.0);
     element.speed.multiplyScalar(0.99);
-    element.position.add(element.speed);
+    
+    if (element.collision == 1) {
+      element.position.sub(element.speed);
+    } else {
+      element.position.add(element.speed);
+    }
     // element.position.copy(new THREE.Vector3());
     // let speedLength = element.speed.length();
     // let tempScaler = THREE.Math.mapLinear(speedLength, 1.0, 3.0, 0.2, 1.0);
