@@ -17,12 +17,11 @@ function fishAnimation() {
     element.speed.multiplyScalar(0.99);
     if (element.collision == 1) {
       console.log(element.collision)
-      // element.position.sub(element.speed);
-      setTimeout(() => {
-        element.collision = 0
-      }, 1000);
+      element.speed.multiplyScalar(5.99);
+      element.position.sub(element.speed);
+      element.collision = 0
     } else {
-      // element.position.add(element.speed);
+      element.position.add(element.speed);
     }
     element.lookAt(fishSwim.target);
     element.rotation.y -= Math.PI * 0.5;
@@ -65,6 +64,7 @@ function createFish() {
   bodyMat = getMaterialbyColor(getRandomColor());
   // let bodyFish = new THREE.Mesh(bodyGeom, bodyMat);
   let bodyFish = new THREE.Mesh(bodyGeom, bodyMat);
+  bodyFish.name = 'body'
 
   // Tail
   let tailGeom = new THREE.CylinderGeometry(0, 60, 60, 4, false);
