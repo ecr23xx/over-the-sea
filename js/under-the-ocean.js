@@ -1,153 +1,331 @@
-var renderer, scene, camera, cube, light, floor, object;
-var stat = null;
-var gui;
-//绑定canvas和渲染器
-function initRender() {
-    renderer = new THREE.WebGLRenderer({
-        alpha: true,
-        antialias: true
-    });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
-    //清除画面颜色
-    renderer.setClearColor(0x418a93);
+  //海底场景渲染
 
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
+let circle;
+function underSeaInit() {
+    	initSeaScene();
+    	initSeaCamera();
+    	initSeaRender();
+ 
+    	initSeaLight();
+
+		//放置植物
+  		placePlant(40, 1500, 1500);
+
+	    addParticle();
+	    
+	    initText();
+
+	    initFloor();
+
+	    let pos = [{x:50, y:5-100, z:40}, {x:185, y:0-100, z:30}, {x:145, y:0-100, z:40}];
+	    let pos1 = [{x:140, y:5-100, z:-20}, {x:235, y:0-100, z:40}, {x:250, y:10-100, z:45}];
+	    loadCoral(pos);
+	    loadKelp(pos1);
+
+	    placeStone(200, 1500, 1500, 'range');
+	    placeSeaGrass(90, 1600, 1600, 3);
+
+	    //给定视角范围
+	    let geometry = new THREE.CircleGeometry(300,32);
+	    let material = new THREE.MeshBasicMaterial({
+	                                            color:0x5ec0a3,
+	                                        });
+	    circle = new THREE.Mesh(geometry, material);
+	    circle.z = -1000;
+	    circle.visible = false;
+	    circleScene.add(circle);
 }
 
-//初始化Stat
-function initStat() {
-    stat = new Stats();
-    stat.domElement.style.position = 'absolute';
-    stat.domElement.style.right = '0px';
-    stat.domElement.style.top = '0px';
-    document.body.appendChild(stat.domElement);
-}
-
-function initGui() {
-    gui = new dat.GUI();
-
-    let guiThree = gui.addFolder("Color Setting");
-    let guiThreeParams = {
+let guiSeaParams;
+//初始化gui
+function guiSeaInit() {
+	let guiUnderSea = gui.addFolder("Under the Sea Setting");
+    guiSeaParams = {
         fogColor: 0xcefaeb,
-        sandColor: 0xe1c43f
+        sandColor: 0xe1c43f,
+        stencilTest: false,
+        underTheSea:false
     };
-    gui.addColor(guiThreeParams, 'sandColor').onChange(function(value) {
-        console.log(value);
-        floor.material.color.set(value);
+    guiUnderSea.add(guiSeaParams, 'underTheSea').name('under sea').onChange(function(value) {
+    	if (value) {
+    		controler = new THREE.OrbitControls(seaCamera, renderer.domElement);
+    	} else {
+            controler = new THREE.OrbitControls(camera, renderer.domElement);
+        }
     });
-    gui.addColor(guiThreeParams, 'fogColor').onChange(function(value) {
-        console.log(value);
-        scene.fog.color.set(value);
+    guiUnderSea.addColor(guiSeaParams, 'sandColor').onChange(function(value) {
+    	if (guiSeaParams.underTheSea) {
+        	floor.material.color.set(value);
+    	}
+    });
+    guiUnderSea.addColor(guiSeaParams, 'fogColor').onChange(function(value) {
+        if (guiSeaParams.underTheSea) {
+        	underScene.fog.color.set(value);
+        	circle.material.color.set(value);
+        }
+    });
+    guiUnderSea.add(guiSeaParams, 'stencilTest').onChange(function(value) {
+    	if (!value) {
+
+    		circle.visible = false;
+
+    		//启用controler
+    		if (controler)
+    			controler.enabled = true;
+
+    		//打开深度测试
+        	stateBuffers.depth.setTest(true);
+        	stateBuffers.stencil.setTest(false);
+        	//设置模板可写
+        	stateBuffers.stencil.setMask(0xff);
+    	} else {
+    		circle.visible = true;
+
+			//禁用controler
+			if (controler)
+		    	controler.enabled = false;
+		    }
     });
 }
 
-//创建场景
-function initScene() {
-    scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0xcefaeb, 0.0018);
+//初始化海底composer
+let underComposer;
+function initSeaRender() {
+
+	underComposer = new THREE.EffectComposer(renderer);
+	let renderPass1 = new THREE.RenderPass(underScene, seaCamera); //保存渲染结果，但不会输出到屏幕
+	//renderPass1.clear = false;
+
+	let renderPass2 = new THREE.RenderPass(circleScene, seaCamera);
+	renderPass2.clear = false;
+	    
+	let effectCopy = new THREE.ShaderPass(THREE.CopyShader); //传入了CopyShader着色器，用于拷贝渲染结果
+	effectCopy.renderToScreen = true;  //设置输出到屏幕上
+	    
+	underComposer.addPass(renderPass1);
+	underComposer.addPass(renderPass2);
+	underComposer.addPass(effectCopy);
 }
 
-//创建照相机
-function initCamera() {
-    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 3000);
-    camera.position.set(50, 50, 50);
-    camera.lookAt(new THREE.Vector3(0, 0, 0));
-    scene.add(camera);
+//初始化海底场景
+let underScene, circleScene;
+function initSeaScene() {
+    underScene = new THREE.Scene();
+    
+    circleScene = new THREE.Scene();
+
+    underScene.fog = new THREE.FogExp2(0x5ec0a3, 0.0018);
+    let grid1=new THREE.GridHelper();
+    underScene.add(grid1);
+    let axes = new THREE.AxesHelper(1000);  
+    underScene.add(axes);
+
+
+    var path = "../asset/textures/skybox/";       //设置路径
+        var format = '.jpg';                        //设定格式
+  	var urls = [
+       path + 'px1'+ format,     
+       path + 'px1'+ format,
+       path + 'ny' + format,
+       path + 'ny' + format,
+       path + 'pz1' + format,
+       path + 'pz1' + format
+        ];
+  	var textureCube = new THREE.CubeTextureLoader().load( urls );
+
+  	underScene.background = textureCube; //作为背景贴图
 }
 
-//添加光源
-function initLight() {
-    light = new THREE.DirectionalLight(0xffffff, 0.2);
-
-    light.castShadow = true;
-    light.shadow.camera.left = -200;
-    light.shadow.camera.right = 200;
-    light.shadow.camera.top = 200;
-    light.shadow.camera.bottom = -200;
-
-    light.position.set(0, 100, 50);
-
-    var helper = new THREE.CameraHelper(light.shadow.camera);
-    scene.add(helper);
-
-    scene.add(light);
-
-    var globalLight = new THREE.HemisphereLight(0xdddddd, 0xdddddd, .5);
-    scene.add(globalLight);
-
-    var light2 = new THREE.DirectionalLight(0xffffff, 0.2);
-    light2.position.set(0, 150, 50);
-    scene.add(light2);
-
+//初始化海底摄像机
+let seaCamera;
+function initSeaCamera() {
+    seaCamera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 3000);
+    seaCamera.position.set(0, 90, 400);
 }
 
-//创建物体
-function initObject() {
-    cube = new THREE.Mesh(new THREE.BoxGeometry(30, 30, 30),
-        new THREE.MeshPhongMaterial({
-            color: 0xffffff
-        })
-    );
-    cube.position.y = 5;
+//初始化海底光照
+function initSeaLight() {
 
-    cube.castShadow = true;
+    let seaGlobalLight = new THREE.HemisphereLight(0xdddddd, 0xdddddd, .5);
+    underScene.add(seaGlobalLight);
 
-    scene.add(cube);
+    let seaLight = new THREE.DirectionalLight(0xffffff, 0.2);
+    seaLight.position.set(0, 150, 50);
+    underScene.add(seaLight);
 }
 
+//打开模板测试
+function StencilTest() {
+
+    let gl = renderer.getContext();
+
+    //打开深度测试和模板测试
+    stateBuffers.depth.setTest(true);
+    stateBuffers.stencil.setTest(true);
+    //设置模板可写
+    stateBuffers.stencil.setMask(0xff);
+    //设置深度测试和模板测试都通过时设为1
+    stateBuffers.stencil.setOp(gl.KEEP, gl.KEEP, gl.REPLACE);
+
+    renderer.clear();
+
+    //写入模板buffer
+    stateBuffers.stencil.setFunc(gl.ALWAYS, 1, 0xff);
+    stateBuffers.stencil.setMask(0xff);
+
+    renderer.render(circleScene, seaCamera);
+        
+        //模板buffer为1时才渲染
+    stateBuffers.stencil.setFunc(gl.EQUAL, 1 ,0xff);
+    stateBuffers.stencil.setMask(0x00);
+    stateBuffers.depth.setTest(false);
+}
+
+//加载文字
+function initText() {
+    let loader = new THREE.FontLoader();
+    loader.load( './asset/fonts/helvetiker_bold.typeface.json', 
+
+        function ( font ) {
+
+            let geometry1 = new THREE.TextGeometry( 'Your', {
+                font: font,
+                size: 60,
+                height: 5,
+                curveSegments: 12,
+                bevelEnabled: true,
+                bevelThickness: 10,
+                bevelSize: 8,
+                bevelSegments: 5
+            } );
+
+            let geometry2 = new THREE.TextGeometry( 'Ocean', {
+                font: font,
+                size: 60,
+                height: 5,
+                curveSegments: 12,
+                bevelEnabled: true,
+                bevelThickness: 10,
+                bevelSize: 8,
+                bevelSegments: 5
+            });
+            let meshMaterial = new THREE.MeshNormalMaterial({
+                flatShading: THREE.FlatShading,
+                transparent: true,
+                opacity: 1.0
+            });
+
+            let mesh1 = new THREE.Mesh(geometry1, meshMaterial);
+            mesh1.position.set(-220, 80-100, 0);
+
+            underScene.add(mesh1);
+
+            let mesh2 = new THREE.Mesh(geometry2, meshMaterial);
+            mesh2.position.set(20, 80-100, 0);
+            
+            underScene.add(mesh1);
+            underScene.add(mesh2);
+        },
+        function ( xhr ) {
+            console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+        },
+        function (err) {
+            console.log(err);
+        }
+     );
+}
+
+//放置石头
+function placeStone(stoneCount, width, height, mode) {
+    let Colors = [0xda5823, 0xea7156, 0x148428, 0x781155, 0x2a2664, 0x1154a0];
+    for (let i = 0; i < stoneCount; i++) {
+        let type = Math.floor(Math.random()*3);
+        let geometry;
+        let materials = new THREE.MeshPhongMaterial({
+                    color:Colors[Math.floor(Math.random()*6)],
+                    flatShading:true
+                  });
+        let radius = Math.max(15, Math.random()*30);
+        if (type == 0) {
+              geometry = new THREE.OctahedronGeometry(radius, 1);
+        } else if (type == 1) {
+              geometry = new THREE.DodecahedronGeometry(radius, 0);
+        } else {
+              geometry = new THREE.TetrahedronGeometry(radius, 1);
+        }
+        let stone = new THREE.Mesh(geometry, materials);
+        //暂时不用加阴影
+        //stone.castShadow = true;
+        stone.receiveShadow = true;
+        if (mode == 'range') {
+            let x = (Math.random()-0.5)*width;
+            let z = (Math.random()-0.5)*height;
+            while (x < 300 && x > -50 && z < 150 && z > -50) {
+                x = x + 50;
+            }
+            stone.position.set(x, radius/2-Math.random()*2-100, z);
+        } else {
+            stone.position.set(width+radius, radius/2-Math.random()*3-100, height+Math.random()*20+radius);
+        }
+            
+         underScene.add(stone);
+    }
+}
+
+//浮游生物
+let plankton;
+function addParticle() {
+    let geometry = new THREE.BufferGeometry();
+    let vertices = [];
+    let textureLoader = new THREE.TextureLoader();
+    let sprite = textureLoader.load( './asset/textures/circle.png' );
+    
+    for ( i = 0; i < 3000; i ++ ) {
+        let x = Math.random() * 2000 - 1000;
+        let y = Math.random() * 2000 - 1000;
+        let z = Math.random() * 2000 - 1000;
+        vertices.push( x, y, z );
+    }
+    geometry.addAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
+
+    let materials = new THREE.PointsMaterial( { size: 5, map: sprite, blending: THREE.AdditiveBlending, depthTest: false, transparent : true } );
+    materials.color.set(0xffff00);
+    plankton = new THREE.Points( geometry, materials);
+    plankton.position.set(0,0,0);
+    plankton.rotation.x = Math.random() * 6;
+    plankton.rotation.y = Math.random() * 6;
+    plankton.rotation.z = Math.random() * 6;
+    underScene.add( plankton );
+}
+
+let floor;
 function initFloor() {
     floor = new THREE.Mesh(new THREE.PlaneGeometry(1600, 1600, 24, 16),
         new THREE.MeshLambertMaterial({
-            color: 0xe1c43f
+            color: 0xe1c43f,
+            side: THREE.DoubleSide,
+            flatShading:true
         })
     );
-    var vertices = floor.geometry.vertices;
-    console.log(vertices.length);
-    for (var i = 0; i < vertices.length; i++) {
-        var v = vertices[i];
-        var rand = Math.random() * 20;
-        rand = (rand > 10) ? -rand : rand;
+    let vertices = floor.geometry.vertices;
+    for (let i = 0; i < vertices.length; i++) {
+        let v = vertices[i];
+        let rand = Math.random() * 20;
+        rand = (rand > 10) ? -2 : rand;
         v.z += rand;
     }
     floor.receiveShadow = true;
     floor.geometry.computeVertexNormals();
     floor.rotation.x = -Math.PI / 2;
-    floor.position.y = -10;
-    scene.add(floor);
-
+    floor.position.y = 0-100;
+    underScene.add(floor);
 }
 
-//渲染循环
+function seaAnimaiton() {
 
-function render() {
-    stat.begin();
-    requestAnimationFrame(render);
-    stat.end();
-    renderer.render(scene, camera);
-}
-
-//自适应窗口大小
-function onResize() {
-    // 设置透视摄像机的长宽比
-    camera.aspect = window.innerWidth / window.innerHeight
-        // 摄像机的 position 和 target 是自动更新的，而 fov、aspect、near、far 的修改则需要重新计算投影矩阵（projection matrix）
-    camera.updateProjectionMatrix();
-    // 设置渲染器输出的 canvas 的大小
-    renderer.setSize(window.innerWidth, window.innerHeight)
-}
-
-function init() {
-    initRender();
-    initStat();
-    initScene();
-    initCamera();
-    initGui();
-    initObject();
-    initLight();
-    initFloor();
-    render();
-    var controls = new THREE.OrbitControls(camera);
-    window.addEventListener('resize', onResize, false);
+	plankton.position.set(100*Math.cos(0.1*time),0-100,100*Math.sin(0.1*time));
+	
+	if (guiSeaParams.stencilTest) {
+        StencilTest();
+    }
 }

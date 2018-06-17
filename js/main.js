@@ -11,25 +11,37 @@ let Colors = {
   yellow: 0xfaff70
 };
 
+
+
 function init() {
   threeInit();
   sceneInit();
   raycasterInit();
   PostprocessingInit();
 
-  // clothInit();
-  // fireworksInit();
+  //deer
+  deerInit();
+
+  clothInit();
+  fireworksInit();
   // fish
 
 
   // fishSwim.fish
   // postprocessing();
+  
+  //under the sea
+  underSeaInit();
+  bubblesInit();
+  
   gui = new dat.GUI();
   guiThreeInit();
   guiSceneInit();
   guiPostprocessingInit();
   guiClothInit();
   guiFireworksInit();
+  guiBubblesInit();
+  guiSeaInit();
 
   clock = new THREE.Clock();
   stats = new Stats();
@@ -40,30 +52,48 @@ function init() {
 }
 
 function animation(current) {
-  // raycaster
-  raycaster.setFromCamera(mouse, camera);
-  let targetDeepth = 100 + 50 * Math.sin(performance.now() * 0.001);
-  fishSwim.target = raycaster.ray.at(targetDeepth, new THREE.Vector3());
+  //render the scene over the sea
+  if (! guiSeaParams.underTheSea) {
+      // raycaster
+      raycaster.setFromCamera(mouse, camera);
+      let targetDeepth = 100 + 50 * Math.sin(performance.now() * 0.001);
+      fishSwim.target = raycaster.ray.at(targetDeepth, new THREE.Vector3());
 
-  // seaplaneAnimaiton();
-  fishAnimation();
-  collisionDetection();
+      seaplaneAnimaiton();
+      cloudAnimation();
+      fishAnimation();
+    
+      if(guiSceneParams.collisionDetect)
+        collisionDetection();
 
-  // clothAnimation(current);
-  // fireworksAnimation();
-  // composer.render();
-  stats.begin();
-  stats.end();
+      clothAnimation(current);
+      fireworksAnimation();
 
-  // render
-  if (guiPostProcessParams.postProcess) {
-    composer.render();
-  } else {
-    renderer.render(scene, camera);
-  }
+      deerAnimation();
+      // composer.render();
+      stats.begin();
+      stats.end();
 
-  let delta = clock.getDelta();
-  if (guiThreeParams.fly) controler.update(delta);
+      // render
+      if (guiPostProcessParams.postProcess) {
+        composer.render();
+      } else {
+        renderer.render(scene, camera);
+      }
+
+      let delta = clock.getDelta();
+      if (guiThreeParams.fly) controler.update(delta);
+    
+    //render the sea under the sea
+   } else {
+      bubblesAnimation();
+      seaAnimaiton();
+
+      stats.begin();
+      stats.end();
+
+      underComposer.render();
+   }
 
   requestAnimationFrame(this.animation.bind(this));
 }
@@ -91,7 +121,11 @@ function guiThreeInit() {
     .name("Oribit Camera")
     .onChange(function (value) {
       if (value) {
-        controler = new THREE.OrbitControls(camera, renderer.domElement);
+          if (!guiSeaParams.underTheSea) {
+            controler = new THREE.OrbitControls(camera, renderer.domElement);
+          } else {
+            controler = new THREE.OrbitControls(seaCamera, renderer.domElement);
+          }
       } else {
         controler = null;
       }
@@ -100,15 +134,17 @@ function guiThreeInit() {
     .add(guiThreeParams, "fly")
     .name("Fly Camera")
     .onChange(function (value) {
-      if (value) {
-        controler = new THREE.FlyControls(camera);
-        controler.movementSpeed = 20;
-        controler.domElement = container;
-        controler.rollSpeed = Math.PI * 0.1;
-        controler.autoForward = false;
-        controler.dragToLook = false;
-      } else {
-        controler = null;
+      if (!guiSeaParams.underTheSea) {
+          if (value && controler) {
+            controler = new THREE.FlyControls(camera);
+            controler.movementSpeed = 20;
+            controler.domElement = container;
+            controler.rollSpeed = Math.PI * 0.1;
+            controler.autoForward = false;
+            controler.dragToLook = false;
+          } else {
+            controler = null;
+          }
       }
     });
 }
@@ -120,6 +156,21 @@ function threeInit() {
   scene = new THREE.Scene();
   scene.fog = new THREE.Fog(0x93CFF3, 50, 300);
 
+  //skybox
+  var path = "../asset/textures/skybox/";       //set path
+        var format = '.jpg';                        //set type
+  var urls = [
+       path + 'px2'+ format,     
+       path + 'px2'+ format,
+       path + 'py' + format,
+       path + 'ny' + format,
+       path + 'pz2' + format,
+       path + 'pz2' + format
+        ];
+  var textureCube = new THREE.CubeTextureLoader().load( urls );
+
+  scene.background = textureCube; //bg texture
+  
   camera = new THREE.PerspectiveCamera(
     85,
     window.innerWidth / window.innerHeight,
@@ -135,7 +186,9 @@ function threeInit() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   container.appendChild(renderer.domElement);
   renderer.shadowMap.enabled = true;
-  renderer.setClearColor(0x93CFF3);
+  renderer.setClearColor(0x000000);
+  
+  stateBuffers = renderer.state.buffers;
 
   // light that case shadow
   //   scene.add(new THREE.AmbientLight(0x663344, 3.0));
@@ -207,6 +260,20 @@ function onDocumentMouseMove(event) {
   event.preventDefault();
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  if (guiSeaParams.stencilTest) {
+        var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+
+        vector.unproject(seaCamera);
+
+        var dir = vector.sub(seaCamera.position).normalize();
+
+        var distance = -seaCamera.position.z / dir.z;
+
+        var pos = seaCamera.position.clone().add(dir.multiplyScalar(distance));
+        circle.position.setX(pos.x*3.3);
+        circle.position.setY(pos.y*3.3);
+        circle.position.setZ(-1000);
+    }
 }
 
 function postprocessing() {
@@ -269,4 +336,3 @@ function collisionDetectionForOneObject(mesh, collideMeshList) {
     }
   }
 }
-
