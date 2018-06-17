@@ -1,15 +1,5 @@
 var mixers = [];
 function deerInit() {
-  // ground
-  var mesh = new THREE.Mesh(
-    new THREE.PlaneBufferGeometry(2000, 2000),
-    new THREE.MeshPhongMaterial({ color: 0x999999, depthWrite: false })
-  );
-  mesh.rotation.x = -Math.PI / 2;
-  mesh.receiveShadow = true;
-  scene.add(mesh);
-
-
   // model
   var loader = new THREE.FBXLoader();
   loader.load("asset/models/deer/stag.fbx", function(object) {
@@ -23,10 +13,12 @@ function deerInit() {
         child.receiveShadow = true;
       }
     });
+    
     scene.add(object);
-    object.scale.x = guiDeerParam.scaleX
-    object.scale.y = guiDeerParam.scaleY
-    object.scale.z = guiDeerParam.scaleZ
+    object.scale.x = 0.08;
+    object.scale.y = 0.08;
+    object.scale.z = 0.08;
+    object.position.set(-10, 12, -50);
 
   });
 }

@@ -25,8 +25,6 @@ function init() {
   // clothInit();
   // fireworksInit();
   // fish
-
-
   // fishSwim.fish
   // postprocessing();
   
@@ -48,12 +46,13 @@ function init() {
   clock.start();
   document.body.appendChild(stats.dom);
   requestAnimationFrame(this.animation.bind(this));
-  // animation(this);
+  animation(this);
 }
 
 function animation(current) {
   //render the scene over the sea
-  if (! guiSeaParams.underTheSea) {
+  // if (! guiSeaParams.underTheSea) {
+  if (true) {
       // raycaster
       raycaster.setFromCamera(mouse, camera);
       let targetDeepth = 100 + 50 * Math.sin(performance.now() * 0.001);

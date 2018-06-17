@@ -40,7 +40,7 @@ function fishInit() {
   }
 }
 
-function randomV3(range) {
+function randomV3(range)  {
   let t1 = (Math.random() - 0.5) * range;
   let t2 = (Math.random() - 0.5) * range;
   let t3 = (Math.random() - 0.5) * range;
@@ -66,6 +66,7 @@ function createFish() {
   bodyMat = getMaterialbyColor(getRandomColor());
   // let bodyFish = new THREE.Mesh(bodyGeom, bodyMat);
   let bodyFish = new THREE.Mesh(bodyGeom, bodyMat);
+  bodyFish.name = 'body'
 
   // Tail
   let tailGeom = new THREE.CylinderGeometry(0, 60, 60, 4, false);
