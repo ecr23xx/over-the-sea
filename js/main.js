@@ -25,10 +25,8 @@ function init() {
   clothInit();
   fireworksInit();
   // fish
-
-
-  fishSwim.fish
-  postprocessing();
+  // fishSwim.fish
+  // postprocessing();
   
   //under the sea
   underSeaInit();
@@ -67,11 +65,13 @@ function animation(current) {
       // if(guiSceneParams.collisionDetect)
         collisionDetection();
 
-      // clothAnimation(current);
-      // fireworksAnimation();
-
-      // deerAnimation();
-      // // composer.render();
+      // cloth
+      clothAnimation(current);
+      // fireworks
+      fireworksAnimation();
+      // deer
+      deerAnimation();
+      // composer.render();
       stats.begin();
       stats.end();
 
