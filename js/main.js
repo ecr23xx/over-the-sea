@@ -28,7 +28,7 @@ function init() {
   // fishSwim.fish
   // postprocessing();
   
-  //under the sea
+  // under the sea
   underSeaInit();
   bubblesInit();
   
@@ -36,7 +36,7 @@ function init() {
   guiThreeInit();
   guiSceneInit();
   guiPostprocessingInit();
-  // guiClothInit();
+  guiClothInit();
   guiFireworksInit();
   guiBubblesInit();
   guiSeaInit();
@@ -59,7 +59,7 @@ function animation(current) {
       fishSwim.target = raycaster.ray.at(targetDeepth, new THREE.Vector3());
 
       // seaplaneAnimaiton();
-      cloudAnimation();
+      // cloudAnimation();
       fishAnimation();
     
       // if(guiSceneParams.collisionDetect)
@@ -241,10 +241,10 @@ function threeInit() {
   shadowhelper = new THREE.CameraHelper(shadowLight.shadow.camera);
   scene.add(shadowhelper);
 
-  axesHelper = new THREE.AxesHelper(100);
-  scene.add(axesHelper);
-  gridHelper = new THREE.GridHelper(100, 10);
-  scene.add(gridHelper);
+  // axesHelper = new THREE.AxesHelper(100);
+  // scene.add(axesHelper);
+  // gridHelper = new THREE.GridHelper(100, 10);
+  // scene.add(gridHelper);
 
   window.addEventListener("resize", handleWindowResize, false);
 }
@@ -285,7 +285,7 @@ function postprocessing() {
     0.3,
     0.5
   );
-  // effectFilm.goWild = true;
+  effectFilm.goWild = true;
 
   effectFilm.renderToScreen = true;
 
@@ -313,7 +313,7 @@ function collisionDetection() {
   for (let i = 0; i < objects.length; i++) {
     let obj = objects[i]
     if (obj.name == 'island') {
-      island = obj;
+      island = obj.clone();
     } else if (obj.name == 'fish') {
       fishes.push(obj.children[0]);
     }
@@ -346,28 +346,28 @@ function collisionDetectionForOneObject(mesh, island, index) {
   var geometry = new THREE.Geometry();  
   geometry.vertices.push(originPoint);
   geometry.vertices.push(next_pos);
-  var line = new THREE.Line(geometry, material);  
+  var line = new THREE.Line(geometry, material);
   scene.add(line);
 
   // var material = new THREE.LineBasicMaterial({color:0x00ffff});  
   // var geometry = new THREE.Geometry();
-  // let new_vertex = new THREE.Vector3(0, 0, 0);
-  // new_vertex.multiplyVectors(island.geometry.vertices[100].clone().add(island.position.normalize()), island.scale);
+  // let new_vertex = island.geometry.vertices[200].clone().applyMatrix4(island.matrixWorld);
   // geometry.vertices.push(new_vertex);
   // geometry.vertices.push(next_pos);
   // var line = new THREE.Line(geometry, material);  
   // scene.add(line);
 
   for (let i = 0; i < island.geometry.vertices.length; i++) {
-    let new_vertex = new THREE.Vector3(0, 0, 0);
-    new_vertex.multiplyVectors(island.geometry.vertices[100].clone().add(island.position.normalize()), island.scale);
+    let new_vertex = island.geometry.vertices[i].clone().applyMatrix4(island.matrixWorld);
     let temp = new_vertex.sub(next_pos).length();
     if (temp < min) {
       min = temp;
     }
   }
+
+  console.log(min)
   
-  if (min < 100) {
+  if (min < 10) {
     mesh.parent.collision = 1;
     console.log(mesh.parent.collision)
   } else {

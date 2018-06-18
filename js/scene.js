@@ -26,10 +26,10 @@ function getMaterialbyColor(color) {
 }
 
 function sceneInit() {
-  seaPlaneInit();
+  // seaPlaneInit();
   islandInit();
   treeInit();
-  cloudInit();
+  // cloudInit();
   fishInit();
 }
 
