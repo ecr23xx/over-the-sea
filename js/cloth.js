@@ -20,9 +20,9 @@ let guiClothParam = new function (){
     this.scaleY = 1;
     this.stickColor = 0x522525;
     this.scaleStick = 1;
-    this.positionX = -76;
+    this.positionX = -22;
     this.positionY = -66;
-    this.positionZ = 162;
+    this.positionZ = 78;
     this.redraw = function () {
         underScene.remove(clothes[0].mesh);
         clothes.splice(0, 1);
