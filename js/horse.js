@@ -30,7 +30,7 @@ function horseInit() {
             morphTargets: true
         }));
         mesh.scale.set(0.11, 0.11, 0.11);
-        mesh.position.set(35, 17, -70);
+        mesh.position.set(40, 17, -50);
         scene.add(mesh);
         //AnimationMixer是场景中特定对象的动画播放器。当场景中的多个对象独立动画时，可以为每个对象使用一个AnimationMixer
         mixer = new THREE.AnimationMixer(mesh);
@@ -46,54 +46,8 @@ function horseInit() {
     });
 }
 
-function horseRender() {
-
-    var time = horseClock.getDelta();
-    if (mixer) {
-        mixer.update(time);
-    }
-
-    // controls.update();
-}
-
-//窗口变动触发的函数
-function onWindowResize() {
-
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    horseRender();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-
-}
-
 function horseAnimation() {
-    // //更新控制器
-    // horseRender();
-
-    // //更新性能插件
-    // stats.update();
-
-    // renderer.render(scene, camera);
-
-    // requestAnimationFrame(animate);
     if (mixer) {
         mixer.update(clock.getDelta());
     }
 }
-
-// function draw() {
-//     //兼容性判断
-//     if (!Detector.webgl) Detector.addGetWebGLMessage();
-
-//     initGui();
-//     initRender();
-//     initScene();
-//     initCamera();
-//     initLight();
-//     initModel();
-//     initControls();
-//     initStats();
-
-//     animate();
-//     window.onresize = onWindowResize;
-// }

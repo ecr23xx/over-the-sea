@@ -5,18 +5,14 @@ function underSeaInit() {
   initSeaScene();
   initSeaCamera();
   initSeaRender();
-  
 
   initSeaLight();
 
   //放置植物
   placePlant(40, 1500, 1500);
 
-  // seaflower
-  initSeaflower();
-
   addParticle();
-  addInteractiveParticles();
+  // addInteractiveParticles();
 
   initText();
 
@@ -111,7 +107,7 @@ function initSeaRender() {
   underComposer.addPass(renderPass2);
   underComposer.addPass(effectCopy);
 
-  computeRendererInit();
+  // computeRendererInit();
 }
 
 //初始化海底场景
@@ -338,105 +334,105 @@ function seaAnimaiton() {
 }
 
 
-// 着色器
-let customShader = [
-  "../glsl/fragmentShaderText.frag",
-  "../glsl/fs-particles-shadow.frag",
-  "../glsl/posFShaderText.frag",
-  "../glsl/velFShaderText.frag",
-  "../glsl/vertexShaderText.vert",
-];
+// // 着色器
+// let customShader = [
+//   "../glsl/fragmentShaderText.frag",
+//   "../glsl/fs-particles-shadow.frag",
+//   "../glsl/posFShaderText.frag",
+//   "../glsl/velFShaderText.frag",
+//   "../glsl/vertexShaderText.vert",
+// ];
 
-// 粒子
-function addInteractiveParticles() {
-  let WIDTH = 128;
-  particlesGeometry = new THREE.BufferGeometry();
-  let clampCount = WIDTH * WIDTH;
-  let positionsLength = WIDTH * WIDTH * 3 * 18;
-  let cubeVerticesPositions = new Float32Array(positionsLength);
-  let p = 0;
-  for (let j = 0; j < positionsLength; j += 3) {
-    cubeVerticesPositions[j] = p;
-    cubeVerticesPositions[j + 1] = Math.floor(p / 18);
-    cubeVerticesPositions[j + 2] = p % 18;
-    p++;
-  }
-  particlesGeometry.addAttribute('position', new THREE.BufferAttribute(cubeVerticesPositions, 3));
+// // 粒子
+// function addInteractiveParticles() {
+//   let WIDTH = 128;
+//   particlesGeometry = new THREE.BufferGeometry();
+//   let clampCount = WIDTH * WIDTH;
+//   let positionsLength = WIDTH * WIDTH * 3 * 18;
+//   let cubeVerticesPositions = new Float32Array(positionsLength);
+//   let p = 0;
+//   for (let j = 0; j < positionsLength; j += 3) {
+//     cubeVerticesPositions[j] = p;
+//     cubeVerticesPositions[j + 1] = Math.floor(p / 18);
+//     cubeVerticesPositions[j + 2] = p % 18;
+//     p++;
+//   }
+//   particlesGeometry.addAttribute('position', new THREE.BufferAttribute(cubeVerticesPositions, 3));
 
-  particleUniforms = {
-    texturePosition: { type: "t", value: null },
-    textureVelocity: { type: "t", value: null },
-    width: { type: "f", value: WIDTH },
-    height: { type: "f", value: WIDTH },
+//   particleUniforms = {
+//     texturePosition: { type: "t", value: null },
+//     textureVelocity: { type: "t", value: null },
+//     width: { type: "f", value: WIDTH },
+//     height: { type: "f", value: WIDTH },
 
-    windowSize: { type: "2fv", value: new THREE.Vector2(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio) },
-    // overlayTexture: { type: "t", value: new THREE.TextureLoader().load('img/overlay3.jpg') },
+//     windowSize: { type: "2fv", value: new THREE.Vector2(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio) },
+//     // overlayTexture: { type: "t", value: new THREE.TextureLoader().load('img/overlay3.jpg') },
 
-    boxScale: { type: 'v3', value: new THREE.Vector3(0.3, 0.2, 0.8) },
-    meshScale: { type: 'f', value: 2.0 },
+//     boxScale: { type: 'v3', value: new THREE.Vector3(0.3, 0.2, 0.8) },
+//     meshScale: { type: 'f', value: 2.0 },
 
-    depthTexture: { type: 't', value: this.shadowBuffer },
-    shadowV: { type: 'm4', value: new THREE.Matrix4() },
-    shadowP: { type: 'm4', value: new THREE.Matrix4() },
-    resolution: { type: 'v2', value: new THREE.Vector2(this.shadowBufferSize, this.shadowBufferSize) },
-    lightPosition: { type: 'v3', value: new THREE.Vector3() },
+//     depthTexture: { type: 't', value: this.shadowBuffer },
+//     shadowV: { type: 'm4', value: new THREE.Matrix4() },
+//     shadowP: { type: 'm4', value: new THREE.Matrix4() },
+//     resolution: { type: 'v2', value: new THREE.Vector2(this.shadowBufferSize, this.shadowBufferSize) },
+//     lightPosition: { type: 'v3', value: new THREE.Vector3() },
 
-    boxVertices: {
-      type: '3fv',
-      value: [
-        -1, -1, -1, -1, -1, 1, -1, 1, 1,
-        -1, -1, -1, -1, 1, 1, -1, 1, -1,
-        1, 1, -1, 1, -1, -1, -1, -1, -1,
-        1, 1, -1, -1, -1, -1, -1, 1, -1,
-        1, -1, 1, -1, -1, 1, -1, -1, -1,
-        1, -1, 1, -1, -1, -1, 1, -1, -1,
-        1, 1, 1, 1, -1, 1, 1, -1, -1,
-        1, 1, -1, 1, 1, 1, 1, -1, -1,
-        -1, -1, 1, 1, -1, 1, 1, 1, 1,
-        -1, 1, 1, -1, -1, 1, 1, 1, 1,
-        -1, 1, -1, -1, 1, 1, 1, 1, 1,
-        1, 1, -1, -1, 1, -1, 1, 1, 1
-      ]
-    },
-    boxNormals: {
-      type: '3fv',
-      value: [
+//     boxVertices: {
+//       type: '3fv',
+//       value: [
+//         -1, -1, -1, -1, -1, 1, -1, 1, 1,
+//         -1, -1, -1, -1, 1, 1, -1, 1, -1,
+//         1, 1, -1, 1, -1, -1, -1, -1, -1,
+//         1, 1, -1, -1, -1, -1, -1, 1, -1,
+//         1, -1, 1, -1, -1, 1, -1, -1, -1,
+//         1, -1, 1, -1, -1, -1, 1, -1, -1,
+//         1, 1, 1, 1, -1, 1, 1, -1, -1,
+//         1, 1, -1, 1, 1, 1, 1, -1, -1,
+//         -1, -1, 1, 1, -1, 1, 1, 1, 1,
+//         -1, 1, 1, -1, -1, 1, 1, 1, 1,
+//         -1, 1, -1, -1, 1, 1, 1, 1, 1,
+//         1, 1, -1, -1, 1, -1, 1, 1, 1
+//       ]
+//     },
+//     boxNormals: {
+//       type: '3fv',
+//       value: [
 
-        1, 0, 0,
-        0, 0, 1,
-        0, 1, 0
+//         1, 0, 0,
+//         0, 0, 1,
+//         0, 1, 0
 
-      ]
-    },
+//       ]
+//     },
 
-  };
+//   };
 
 
-  particlesmaterial = new THREE.RawShaderMaterial({
-    uniforms: particleUniforms,
-    vertexShader: customShader[4],
-    fragmentShader: customShader[0],
-    side: THREE.DoubleSide,
-    shading: THREE.FlatShading
-  });
+//   particlesmaterial = new THREE.RawShaderMaterial({
+//     uniforms: particleUniforms,
+//     vertexShader: customShader[4],
+//     fragmentShader: customShader[0],
+//     side: THREE.DoubleSide,
+//     shading: THREE.FlatShading
+//   });
 
-  interactiveParticles = new THREE.Mesh(particlesGeometry, particlesmaterial);
-  scene.add(interactiveParticles);
-}
+//   interactiveParticles = new THREE.Mesh(particlesGeometry, particlesmaterial);
+//   scene.add(interactiveParticles);
+// }
 
-function calculateInteractivePosition() {
+// function calculateInteractivePosition() {
 
-  // interactive position
-  raycaster.setFromCamera(mouse, camera);
-  let interactPosition = raycaster.ray.at(100, new THREE.Vector3(1, 1, 1));
+//   // interactive position
+//   raycaster.setFromCamera(mouse, camera);
+//   let interactPosition = raycaster.ray.at(100, new THREE.Vector3(1, 1, 1));
 
-  let tempArray = [];
-  for (let index = 0; index < 32; index++) {
-      if (index < 30) {
-          tempArray.push(new THREE.Vector3(((index / 5) - 3) * 30, ((index % 5) - 2) * 30, 1));
-      } else {
-          tempArray.push(interactPosition);
-      }
-  }
-  return tempArray;
-}
+//   let tempArray = [];
+//   for (let index = 0; index < 32; index++) {
+//       if (index < 30) {
+//           tempArray.push(new THREE.Vector3(((index / 5) - 3) * 30, ((index % 5) - 2) * 30, 1));
+//       } else {
+//           tempArray.push(interactPosition);
+//       }
+//   }
+//   return tempArray;
+// }
