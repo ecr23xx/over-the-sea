@@ -438,71 +438,29 @@ function calculateInteractivePosition() {
 }
 
 
+function render() {
 
-function computeRendererInit() {
-  let WIDTH = 128;
-  gpuCompute = new GPUComputationRenderer(WIDTH, WIDTH, renderer);
+  var now = performance.now();
+  var delta = (now - last) / 1000;
 
-  let dtPosition = gpuCompute.createTexture();
-  let dtVelocity = gpuCompute.createTexture();
-  // this.fillPositionTexture(dtPosition);
-  // this.fillVelocityTexture(dtVelocity);
+  if (delta > 1) delta = 1; // safety cap on large deltas
+  last = now;
 
-  for (let k = 0, kl = dtPosition.image.data.length; k < kl; k += 4) {
+  positionUniforms.time.value = now;
+  positionUniforms.delta.value = delta;
+  velocityUniforms.time.value = now;
+  velocityUniforms.delta.value = delta;
+  birdUniforms.time.value = now;
+  birdUniforms.delta.value = delta;
 
+  velocityUniforms.predator.value.set( 0.5 * mouseX / windowHalfX, - 0.5 * mouseY / windowHalfY, 0 );
 
-      let index = k / 4;
-      dtPosition.image.data[k + 0] = Math.random() * 1.; //oriPositions[index * 3];
-      dtPosition.image.data[k + 1] = Math.random() * 1.; //oriPositions[index * 3 + 1];
-      dtPosition.image.data[k + 2] = Math.random() * 1.; //oriPositions[index * 3 + 2];
-      dtPosition.image.data[k + 3] = -1;
+  mouseX = 10000;
+  mouseY = 10000;
 
-  }
+  gpuCompute.compute();
 
-  // velocityVariable = gpuCompute.addVariable("textureOriginPosition", customShader[3], dtVelocity);
-  velocityVariable = gpuCompute.addVariable("textureVelocity", customShader[3], dtVelocity);
-  positionVariable = gpuCompute.addVariable("texturePosition", customShader[2], dtPosition);
+  birdUniforms.texturePosition.value = gpuCompute.getCurrentRenderTarget( positionVariable ).texture;
+  birdUniforms.textureVelocity.value = gpuCompute.getCurrentRenderTarget( velocityVariable ).texture;
 
-  gpuCompute.setVariableDependencies(velocityVariable, [positionVariable, velocityVariable]);
-  gpuCompute.setVariableDependencies(positionVariable, [positionVariable, velocityVariable]);
-
-  positionUniforms = positionVariable.material.uniforms;
-  velocityUniforms = velocityVariable.material.uniforms;
-
-  positionUniforms.delta = { value: 0.0 };
-  positionUniforms.floorPosY = { value: -100000. };
-  positionUniforms.isReset = { value: false };
-  positionUniforms.textureOriginPosition = { value: dtPosition };
-  positionUniforms.interactPosition = { value: new THREE.Vector3(9999, 9999, 9999) };
-
-
-  // let testMatrix1 = new THREE.Matrix4();
-  // testMatrix1.set(.1, .2, 13., 14.,
-  //     21., 22., 23., 24.,
-  //     31., 32., 33., 34.,
-  //     41., 42., 43., 44.);
-  let tempArray = [];
-  for (let index = 0; index < 32; index++) {
-      tempArray.push(new THREE.Vector3());
-  }
-  positionUniforms.interactTest = { value: tempArray };
-
-  velocityUniforms.delta = { value: 0.0 };
-  velocityUniforms.floorPosY = { value: -100000. };
-  velocityUniforms.forcePos = { value: new THREE.Vector3() };
-  velocityUniforms.forceRadius = { value: 100.0 };
-  velocityUniforms.isReset = { value: false };
-  velocityUniforms.timeScale = { value: 10.0 };
-  velocityUniforms.life = { value: 150.0 };
-  velocityUniforms.evolution = { value: new THREE.Vector3() };
-
-
-  velocityVariable.wrapS = THREE.RepeatWrapping;
-  velocityVariable.wrapT = THREE.RepeatWrapping;
-  positionVariable.wrapS = THREE.RepeatWrapping;
-  positionVariable.wrapT = THREE.RepeatWrapping;
-  var error = gpuCompute.init();
-  if (error !== null) {
-      console.error(error);
-  }
 }
