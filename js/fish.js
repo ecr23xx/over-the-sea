@@ -1,7 +1,7 @@
 var fishSwim = {
   fish: [],
   target: null,
-  total: 2
+  total: 10
 };
 
 function fishAnimation() {

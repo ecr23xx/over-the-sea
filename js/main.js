@@ -4,6 +4,10 @@ let lighthelper, axesHelper, gridHelper, shadowhelper;
 let clock, raycaster, mouse, mousetargetpos;
 let simplex = new SimplexNoise();
 
+let gpuCompute;
+let velocityVariable, positionVariable, positionUniforms, velocityUniforms;
+let interactiveParticles, particlesGeometry, particleUniforms, particlesmaterial;
+
 let Colors = {
   green: 0x8fc999,
   blue: 0x5fc4d0,
@@ -35,6 +39,9 @@ function init() {
   underSeaInit();
   bubblesInit();
   clothInit();
+  computeRendererInit();
+
+  // gui
   gui = new dat.GUI();
   guiThreeInit();
   guiSceneInit();
@@ -44,6 +51,7 @@ function init() {
   guiHorseInit();
   guiBubblesInit();
   guiSeaInit();
+
 
   clock = new THREE.Clock();
   stats = new Stats();
@@ -72,7 +80,7 @@ function animation(current) {
       //
       fireworksAnimation();
 
-      // deerAnimation();
+      deerAnimation();
       // composer.render();
       stats.begin();
       stats.end();
@@ -92,6 +100,20 @@ function animation(current) {
       clothAnimation(current);
       bubblesAnimation();
       seaAnimaiton();
+
+      let nowTime = performance.now() * 0.001;
+      // console.log(interactPosition);
+      positionUniforms.interactTest.value = calculateInteractivePosition();
+      // positionUniforms.interactPosition.value = new THREE.Vector3(1000, 1, 1);
+      gpuCompute.compute();
+      particleUniforms.texturePosition.value = gpuCompute.getCurrentRenderTarget(positionVariable).texture;
+      particleUniforms.textureVelocity.value = gpuCompute.getCurrentRenderTarget(velocityVariable).texture;
+      particleUniforms.lightPosition.value.copy(
+          new THREE.Vector3(Math.sin(nowTime * 0.5) * 200.0, Math.cos(nowTime * 1.1) * 200.0, 120.0)
+      );
+      velocityUniforms.evolution.value.add(new THREE.Vector3(0.002, 0.0005, 0.0003));
+      // interactiveParticles.material = particlesmaterial;
+      stats.update();
 
       stats.begin();
       stats.end();
@@ -383,3 +405,4 @@ function collisionDetectionForOneObject(mesh, island, index) {
   }
 
 }
+
