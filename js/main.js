@@ -78,13 +78,11 @@ function animation(current) {
     
       if(guiSceneParams.collisionDetect)
         collisionDetection();
-
+      
       // fireworks
       fireworksAnimation();
 
       // composer.render();
-      stats.begin();
-      stats.end();
 
       // render
       if (guiPostProcessParams.postProcess) {
@@ -100,15 +98,16 @@ function animation(current) {
    } else {
       clothAnimation(current);
       bubblesAnimation();
-      seaflowerAnimation();
+      seaAnimaiton();
+      //seaflowerAnimation();
 
       stats.begin();
       stats.end();
-
       underComposer.render();
    }
 
   requestAnimationFrame(this.animation.bind(this));
+  stats.update();
 }
 
 //////////////////////////
