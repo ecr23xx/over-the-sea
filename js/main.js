@@ -80,8 +80,6 @@ function animation(current) {
 
       deerAnimation();
       // composer.render();
-      stats.begin();
-      stats.end();
 
       // render
       if (guiPostProcessParams.postProcess) {
@@ -112,15 +110,12 @@ function animation(current) {
       );
       velocityUniforms.evolution.value.add(new THREE.Vector3(0.002, 0.0005, 0.0003));*/
       // interactiveParticles.material = particlesmaterial;
-      stats.update();
-
-      stats.begin();
-      stats.end();
 
       underComposer.render();
    }
 
   requestAnimationFrame(this.animation.bind(this));
+  stats.update();
 }
 
 //////////////////////////
