@@ -25,9 +25,9 @@ function deerInit() {
 
 function deerAnimation() {
     if (mixers.length > 0) {
-        for (var i = 0; i < mixers.length; i++) {
-          mixers[i].update(clock.getDelta());
+      for (var i = 0; i < mixers.length; i++) {
+        mixers[i].update(clock.getDelta());
         }
-      }
+    }
 }
 

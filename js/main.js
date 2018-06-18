@@ -22,6 +22,9 @@ function init() {
   // deer
   // deerInit();
 
+  // horse 
+  horseInit();
+
   // clothInit();
   // fireworksInit();
   // fish
@@ -38,6 +41,7 @@ function init() {
   guiPostprocessingInit();
   guiClothInit();
   guiFireworksInit();
+  guiHorseInit();
   guiBubblesInit();
   guiSeaInit();
 
@@ -51,19 +55,19 @@ function init() {
 
 function animation(current) {
   //render the scene over the sea
-  // if (! guiSeaParams.underTheSea) {
-  if (true) {
+  if (! guiSeaParams.underTheSea) {
       // raycaster
       raycaster.setFromCamera(mouse, camera);
       let targetDeepth = 100 + 50 * Math.sin(performance.now() * 0.001);
       fishSwim.target = raycaster.ray.at(targetDeepth, new THREE.Vector3());
 
-      // seaplaneAnimaiton();
-      // cloudAnimation();
+      seaplaneAnimaiton();
+      cloudAnimation();
       fishAnimation();
+      horseAnimation();
     
-      // if(guiSceneParams.collisionDetect)
-      collisionDetection();
+      if(guiSceneParams.collisionDetect)
+        collisionDetection();
 
       // clothAnimation(current);
       // fireworksAnimation();
@@ -101,7 +105,7 @@ function animation(current) {
 let guiThreeParams = {
   orbit: true,
   fly: false,
-  helper: true
+  helper: false
 };
 
 function guiThreeInit() {
@@ -237,9 +241,9 @@ function threeInit() {
   controler = new THREE.OrbitControls(camera, renderer.domElement);
 
   // helper
-  lighthelper = new THREE.DirectionalLightHelper(shadowLight);
-  shadowhelper = new THREE.CameraHelper(shadowLight.shadow.camera);
-  scene.add(shadowhelper);
+  // lighthelper = new THREE.DirectionalLightHelper(shadowLight);
+  // shadowhelper = new THREE.CameraHelper(shadowLight.shadow.camera);
+  // scene.add(shadowhelper);
 
   // axesHelper = new THREE.AxesHelper(100);
   // scene.add(axesHelper);
@@ -367,7 +371,7 @@ function collisionDetectionForOneObject(mesh, island, index) {
 
   console.log(min)
   
-  if (min < 10) {
+  if (min < 20) {
     mesh.parent.collision = 1;
     console.log(mesh.parent.collision)
   } else {

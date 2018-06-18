@@ -115,10 +115,10 @@ function initSeaScene() {
     circleScene = new THREE.Scene();
 
     underScene.fog = new THREE.FogExp2(0x5ec0a3, 0.0018);
-    let grid1=new THREE.GridHelper();
-    underScene.add(grid1);
-    let axes = new THREE.AxesHelper(1000);  
-    underScene.add(axes);
+    // let grid1=new THREE.GridHelper();
+    // underScene.add(grid1);
+    // let axes = new THREE.AxesHelper(1000);  
+    // underScene.add(axes);
 
 
     var path = "../asset/textures/skybox/";       //设置路径
