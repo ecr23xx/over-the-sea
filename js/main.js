@@ -97,9 +97,10 @@ function animation(current) {
    } else {
       clothAnimation(current);
       bubblesAnimation();
-      seaflowerAnimation();
+      seaAnimaiton();
+      //seaflowerAnimation();
 
-      let nowTime = performance.now() * 0.001;
+      /*let nowTime = performance.now() * 0.001;
       // console.log(interactPosition);
       positionUniforms.interactTest.value = calculateInteractivePosition();
       // positionUniforms.interactPosition.value = new THREE.Vector3(1000, 1, 1);
@@ -109,7 +110,7 @@ function animation(current) {
       particleUniforms.lightPosition.value.copy(
           new THREE.Vector3(Math.sin(nowTime * 0.5) * 200.0, Math.cos(nowTime * 1.1) * 200.0, 120.0)
       );
-      velocityUniforms.evolution.value.add(new THREE.Vector3(0.002, 0.0005, 0.0003));
+      velocityUniforms.evolution.value.add(new THREE.Vector3(0.002, 0.0005, 0.0003));*/
       // interactiveParticles.material = particlesmaterial;
       stats.update();
 
