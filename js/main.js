@@ -23,14 +23,12 @@ function init() {
   raycasterInit();
   PostprocessingInit();
 
-  // deer
-  // deerInit();
-
   // horse 
   horseInit();
 
-
+  // fireworks
   fireworksInit();
+
   // fish
   // fishSwim.fish
   // postprocessing();
@@ -99,7 +97,7 @@ function animation(current) {
    } else {
       clothAnimation(current);
       bubblesAnimation();
-      seaAnimaiton();
+      seaflowerAnimation();
 
       let nowTime = performance.now() * 0.001;
       // console.log(interactPosition);
