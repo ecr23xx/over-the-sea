@@ -5,11 +5,15 @@ function underSeaInit() {
   initSeaScene();
   initSeaCamera();
   initSeaRender();
+  
 
   initSeaLight();
 
   //放置植物
   placePlant(40, 1500, 1500);
+
+  // seaflower
+  initSeaflower();
 
   addParticle();
   addInteractiveParticles();
