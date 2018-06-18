@@ -309,6 +309,9 @@ function handleWindowResize() {
   renderer.setSize(WIDTH, HEIGHT);
   camera.aspect = WIDTH / HEIGHT;
   camera.updateProjectionMatrix();
+  
+  seaCamera.aspect = WIDTH / HEIGHT;
+  seaCamera.updateProjectionMatrix();
 }
 
 function collisionDetection() {
