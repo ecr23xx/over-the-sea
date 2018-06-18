@@ -51,7 +51,6 @@ Firework.prototype = {
         var color = new THREE.Color();
         //color.set(0x0000ff);
         color.setHSL(THREE.Math.randFloat(0.1, 0.9), 1, 0.9);
-        console.log(color);
         this.colors.push( color );
 
         this.geometry = new THREE.Geometry();
@@ -64,7 +63,6 @@ Firework.prototype = {
     },
 
     explode: function(vector) {    // 烟花爆炸
-        console.log("hello");
         this.scene.remove(this.points);
         this.dest = [];
         this.colors = [];
@@ -74,7 +72,6 @@ Firework.prototype = {
             let color = new THREE.Color();
             color.setHSL( THREE.Math.randFloat( 0.1, 0.9 ), 1, 0.5 );
             this.colors.push( color );
-            console.log(color);
             let from = new THREE.Vector3(vector.x, vector.y, vector.z);
             var to;        // 每个点的终点
             let radis = THREE.Math.randInt(100, this.size);
