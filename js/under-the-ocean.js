@@ -111,7 +111,7 @@ function initSeaRender() {
   underComposer.addPass(renderPass2);
   underComposer.addPass(effectCopy);
 
-  //computeRendererInit();
+  computeRendererInit();
 }
 
 //初始化海底场景
