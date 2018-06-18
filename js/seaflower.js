@@ -1,4 +1,4 @@
-let seaflowerGui, skeletonHelper, bones, seaflowerGuiParam, seaflowerMesh;
+var seaflowerGui, skeletonHelper, bones, seaflowerGuiParam, seaflowerMesh;
 
 //初始化dat.GUI简化试验流程
 function guiSeaflowerInit() {
