@@ -9,8 +9,8 @@ const Gravity = new THREE.Vector3(0, -G, 0);
 const Dampen = 0.99;
 
 // 旗的大小
-let SIZEX = 15;
-let SIZEY = 10;
+let SIZEX = 60;
+let SIZEY = 40;
 
 
 
@@ -18,15 +18,15 @@ let guiClothParam = new function (){
     this.flagColor = 0xeeee00;
     this.scaleX = 1;
     this.scaleY = 1;
-    this.stickColor = 0x999999;
+    this.stickColor = 0x522525;
     this.scaleStick = 1;
-    this.positionX = 44;
-    this.positionY = 24;
-    this.positionZ = -57;
+    this.positionX = -76;
+    this.positionY = -66;
+    this.positionZ = 162;
     this.redraw = function () {
-        scene.remove(clothes[0].mesh);
+        underScene.remove(clothes[0].mesh);
         clothes.splice(0, 1);
-        scene.remove(cylinder);
+        underScene.remove(cylinder);
         clothInit();
     };
 };
@@ -234,7 +234,7 @@ class Wind {
     constructor() {
         this.accuracy = 16;
         this.last = null;
-        this.blow = new THREE.Vector3(-1, 0, 1);
+        this.blow = new THREE.Vector3(1, 0, -1);
         this.windForce = 0;
         this.leftOverTime = 0;
     }
@@ -247,14 +247,14 @@ let cylinder;
 function clothInit() {
     let cloth = new Clothe(SIZEX, SIZEY, clothPos, guiClothParam.flagColor);
     clothes.push(cloth);
-    scene.add(cloth.mesh);
+    underScene.add(cloth.mesh);
 
-    let geometry = new THREE.CylinderGeometry( 0.3, 0.3, 20, 32 );
-    let material = new THREE.MeshPhongMaterial( {color: 0x000000} );
+    let geometry = new THREE.CylinderGeometry( 1, 1, 80, 32 );
+    let material = new THREE.MeshPhongMaterial( {color: guiClothParam.stickColor} );
     cylinder = new THREE.Mesh( geometry, material );
     cylinder.position.set(clothPos.x, clothPos.y, clothPos.z);
     cylinder.scale.set(1, guiClothParam.scaleStick, 1);
-    scene.add( cylinder );
+    underScene.add( cylinder );
 }
 
 
@@ -303,15 +303,15 @@ function guiClothInit() {
         cylinder.scale.set(1, value, 1);
     });
 
-    guiCloth.add(guiClothParam, 'positionX', -100, 100).onChange(function(value) {
+    guiCloth.add(guiClothParam, 'positionX', -500, 500).onChange(function(value) {
         clothPos.x = value;
         guiClothParam.redraw();
     });
-    guiCloth.add(guiClothParam, 'positionY', -100, 100).onChange(function(value) {
+    guiCloth.add(guiClothParam, 'positionY', -100, 0).onChange(function(value) {
         clothPos.y = value;
         guiClothParam.redraw();
     });
-    guiCloth.add(guiClothParam, 'positionZ', -100, 100).onChange(function(value) {
+    guiCloth.add(guiClothParam, 'positionZ', -500, 500).onChange(function(value) {
         clothPos.z = value;
         guiClothParam.redraw();
     });

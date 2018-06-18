@@ -25,8 +25,8 @@ function init() {
   // horse 
   horseInit();
 
-  // clothInit();
-  // fireworksInit();
+
+  fireworksInit();
   // fish
   // fishSwim.fish
   // postprocessing();
@@ -34,7 +34,7 @@ function init() {
   // under the sea
   underSeaInit();
   bubblesInit();
-  
+  clothInit();
   gui = new dat.GUI();
   guiThreeInit();
   guiSceneInit();
@@ -69,8 +69,8 @@ function animation(current) {
       if(guiSceneParams.collisionDetect)
         collisionDetection();
 
-      // clothAnimation(current);
-      // fireworksAnimation();
+      //
+      fireworksAnimation();
 
       // deerAnimation();
       // composer.render();
@@ -89,6 +89,7 @@ function animation(current) {
     
     //render the sea under the sea
    } else {
+      clothAnimation(current);
       bubblesAnimation();
       seaAnimaiton();
 
