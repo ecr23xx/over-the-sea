@@ -37,7 +37,7 @@ function init() {
   underSeaInit();
   bubblesInit();
   clothInit();
-  //computeRendererInit();
+  computeRendererInit();
 
   // gui
   gui = new dat.GUI();
