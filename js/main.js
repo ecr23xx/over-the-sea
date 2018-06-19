@@ -78,7 +78,7 @@ function animation(current) {
     
       if(guiSceneParams.collisionDetect)
         collisionDetection();
-      
+
       // fireworks
       fireworksAnimation();
 
@@ -99,7 +99,7 @@ function animation(current) {
       clothAnimation(current);
       bubblesAnimation();
       seaAnimaiton();
-      //seaflowerAnimation();
+      seaflowerAnimation();
 
       stats.begin();
       stats.end();

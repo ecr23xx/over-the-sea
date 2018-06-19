@@ -30,7 +30,7 @@ function horseInit() {
             morphTargets: true
         }));
         mesh.scale.set(0.11, 0.11, 0.11);
-        mesh.position.set(40, 17, -50);
+        mesh.position.set(40, 15, -50);
         scene.add(mesh);
         //AnimationMixer是场景中特定对象的动画播放器。当场景中的多个对象独立动画时，可以为每个对象使用一个AnimationMixer
         mixer = new THREE.AnimationMixer(mesh);
