@@ -282,17 +282,18 @@ function onDocumentMouseMove(event) {
   if (guiSeaParams.stencilTest) {
         var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
 
-        vector.unproject(seaCamera);
+        vector.unproject(circleCamera);
 
-        var dir = vector.sub(seaCamera.position).normalize();
+        var dir = vector.sub(circleCamera.position).normalize();
 
-        var distance = -seaCamera.position.z / dir.z;
+        var distance = -circleCamera.position.z / dir.z;
 
-        var pos = seaCamera.position.clone().add(dir.multiplyScalar(distance));
-        circle.position.setX(pos.x*3.3);
-        circle.position.setY(pos.y*3.3);
-        circle.position.setZ(-1000);
-    }
+        var pos = circleCamera.position.clone().add(dir.multiplyScalar(distance));
+        console.log(pos);
+        circle.position.setX(pos.x*200);
+        circle.position.setY(pos.y*200);
+        circle.position.setZ(-5000)
+  }
 }
 
 function postprocessing() {
@@ -327,6 +328,12 @@ function handleWindowResize() {
   
   seaCamera.aspect = WIDTH / HEIGHT;
   seaCamera.updateProjectionMatrix();
+  
+  circleCamera.left = - window.innerWidth / 2;
+  circleCamera.right = window.innerWidth / 2;
+  circleCamera.top = innerHeight / 2;
+  circleCamera.bottom = - innerHeight / 2;
+  circleCamera.updateProjectionMatrix();
 }
 
 function collisionDetection() {
