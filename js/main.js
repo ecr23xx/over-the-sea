@@ -289,7 +289,7 @@ function onDocumentMouseMove(event) {
         var distance = -circleCamera.position.z / dir.z;
 
         var pos = circleCamera.position.clone().add(dir.multiplyScalar(distance));
-        console.log(pos);
+        //console.log(pos);
         circle.position.setX(pos.x*200);
         circle.position.setY(pos.y*200);
         circle.position.setZ(-5000)
