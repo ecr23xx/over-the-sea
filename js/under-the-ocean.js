@@ -27,11 +27,9 @@ function underSeaInit() {
   placeSeaGrass(90, 1600, 1600, 3);
 
   //给定视角范围
-  var loader = new THREE.TextureLoader();
-  var map = loader.load('../asset/textures/bg.png');
-  let geometry = new THREE.CircleGeometry(150, 32);
+  let geometry = new THREE.CircleGeometry(300, 32);
   let material = new THREE.MeshBasicMaterial({
-    map: map
+    color: 0x5ec0a3,
   });
   circle = new THREE.Mesh(geometry, material);
   circle.z = -1000;
@@ -69,9 +67,7 @@ function guiSeaInit() {
   });
   guiUnderSea.add(guiSeaParams, 'stencilTest').onChange(function (value) {
     if (!value) {
-
       circle.visible = false;
-
       //打开深度测试
       stateBuffers.depth.setTest(true);
       stateBuffers.stencil.setTest(false);
@@ -133,7 +129,7 @@ function initSeaScene() {
   underScene.background = textureCube; //作为背景贴图
 }
 
-//初始化海底摄像机,正交摄像机用于模板测试
+//初始化海底摄像机
 let seaCamera, circleCamera;
 function initSeaCamera() {
   seaCamera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 6000);
@@ -174,8 +170,7 @@ function StencilTest() {
   //写入模板buffer
   stateBuffers.stencil.setFunc(gl.ALWAYS, 1, 0xff);
   stateBuffers.stencil.setMask(0xff);
-  
-  //用正交摄影机渲染
+
   renderer.render(circleScene, circleCamera);
 
   //模板buffer为1时才渲染

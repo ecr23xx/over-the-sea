@@ -64,6 +64,11 @@ function putTree(object, tempSca) {
     let tempRotationy = Math.random() * 2 * Math.PI;
     tempTree.rotation.set(0, tempRotationy, 0);
     tempTree.position.copy(tempPos);
+
+    for (let index = 0; index < tempTree.children.length; index++) {
+      const element = tempTree.children[index];
+      element.castShadow = true;
+    }
     scene.add(tempTree);
   }
 }

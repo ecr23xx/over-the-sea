@@ -27,7 +27,7 @@ function init() {
   horseInit();
 
   // fireworks
-  fireworksInit();
+  // fireworksInit();
 
   // fish
   // fishSwim.fish
@@ -206,10 +206,10 @@ function threeInit() {
   //   scene.add(new THREE.AmbientLight(0x663344, 3.0));
   let shadowLight = new THREE.DirectionalLight(0xffffff, 1.0);
   shadowLight.castShadow = true;
-  shadowLight.shadow.camera.left = -100;
-  shadowLight.shadow.camera.right = 100;
-  shadowLight.shadow.camera.top = 100;
-  shadowLight.shadow.camera.bottom = -100;
+  shadowLight.shadow.camera.left = -200;
+  shadowLight.shadow.camera.right = 200;
+  shadowLight.shadow.camera.top = 200;
+  shadowLight.shadow.camera.bottom = -200;
   shadowLight.shadow.camera.near = 1;
   shadowLight.shadow.camera.far = 1000;
   shadowLight.shadow.mapSize.width = 8192;
@@ -289,7 +289,6 @@ function onDocumentMouseMove(event) {
         var distance = -circleCamera.position.z / dir.z;
 
         var pos = circleCamera.position.clone().add(dir.multiplyScalar(distance));
-        //console.log(pos);
         circle.position.setX(pos.x*200);
         circle.position.setY(pos.y*200);
         circle.position.setZ(-5000)
@@ -328,12 +327,6 @@ function handleWindowResize() {
   
   seaCamera.aspect = WIDTH / HEIGHT;
   seaCamera.updateProjectionMatrix();
-  
-  circleCamera.left = - window.innerWidth / 2;
-  circleCamera.right = window.innerWidth / 2;
-  circleCamera.top = innerHeight / 2;
-  circleCamera.bottom = - innerHeight / 2;
-  circleCamera.updateProjectionMatrix();
 }
 
 function collisionDetection() {
