@@ -77,6 +77,11 @@ function guiSeaInit() {
       circle.visible = true;
     }
   });
+
+
+
+
+
 }
 
 //初始化海底composer
@@ -137,17 +142,18 @@ function initSeaCamera() {
 
   var width = window.innerWidth;
   var height = window.innerHeight;
-  circleCamera = new THREE.OrthographicCamera( - width / 2, width / 2, height / 2, - height / 2, 1, 6000 );
+  circleCamera = new THREE.OrthographicCamera(- width / 2, width / 2, height / 2, - height / 2, 1, 6000);
   circleCamera.position.z = 10;
 }
 
 //初始化海底光照
+let seaLight;
 function initSeaLight() {
 
   let seaGlobalLight = new THREE.HemisphereLight(0xdddddd, 0xdddddd, .5);
   underScene.add(seaGlobalLight);
 
-  let seaLight = new THREE.DirectionalLight(0xffffff, 0.2);
+  seaLight = new THREE.PointLight(0xffffff, 1, 100);
   seaLight.position.set(0, 150, 50);
   underScene.add(seaLight);
 }
@@ -213,6 +219,9 @@ function initText() {
         opacity: 1.0
       });
 
+
+
+
       let mesh1 = new THREE.Mesh(geometry1, meshMaterial);
       mesh1.position.set(-220, 80 - 100, 0);
 
@@ -243,6 +252,26 @@ function placeStone(stoneCount, width, height, mode) {
       color: Colors[Math.floor(Math.random() * 6)],
       flatShading: true
     });
+
+    // normal texture
+    var bump = new THREE.TextureLoader().load("./asset/textures/plaster.png");
+    var normal = new THREE.TextureLoader().load("./asset/textures/plaster.png");
+    bump.wrapS = THREE.RepeatWrapping;
+    bump.wrapT = THREE.RepeatWrapping;
+    bump.repeat.set(2, 2);
+    normal.wrapS = THREE.RepeatWrapping;
+    normal.wrapT = THREE.RepeatWrapping;
+    normal.repeat.set(2, 2);
+    
+    var normalMaterials = new THREE.MeshPhongMaterial({
+      map: normal,
+      shininess: 0
+    });
+
+    // add normal mapping
+    normalMaterials.normalMap = bump;
+    normalMaterials.normalScale.set(20, 20);
+
     let radius = Math.max(15, Math.random() * 30);
     if (type == 0) {
       geometry = new THREE.OctahedronGeometry(radius, 1);
@@ -251,7 +280,7 @@ function placeStone(stoneCount, width, height, mode) {
     } else {
       geometry = new THREE.TetrahedronGeometry(radius, 1);
     }
-    let stone = new THREE.Mesh(geometry, materials);
+    let stone = new THREE.Mesh(geometry, Math.random() > .2 ? materials : normalMaterials);
     //暂时不用加阴影
     //stone.castShadow = true;
     stone.receiveShadow = true;
@@ -322,6 +351,8 @@ function initFloor() {
 function seaAnimaiton() {
 
   plankton.position.set(100 * Math.cos(0.1 * time), 0 - 100, 100 * Math.sin(0.1 * time));
+  seaLight.position.set(150 * Math.sin(0.2 * time), 150 * Math.cos(0.1 * time), 50);
+  // console.log(seaLight);
 
   if (guiSeaParams.stencilTest) {
     StencilTest();

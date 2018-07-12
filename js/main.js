@@ -27,7 +27,7 @@ function init() {
   horseInit();
 
   // fireworks
-  // fireworksInit();
+  fireworksInit();
 
   // fish
   // fishSwim.fish
@@ -35,11 +35,15 @@ function init() {
   
   // under the sea
   underSeaInit();
+  // bubbles
   bubblesInit();
+  // cloth
   clothInit();
   // seaflower
   initSeaflower();
-  // computeRendererInit();
+  // normal mapping
+  initPointLight()
+  initNormalMappingModel()
 
   // gui
   gui = new dat.GUI();
@@ -100,6 +104,7 @@ function animation(current) {
       bubblesAnimation();
       seaAnimaiton();
       seaflowerAnimation();
+      normalMappingAnimation();
 
       stats.begin();
       stats.end();
